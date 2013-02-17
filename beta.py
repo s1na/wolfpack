@@ -12,19 +12,23 @@ data = s.recv(1024)
 
 url, num, range_ = data.split(',')
 
-r = requests.get(url, headers={'range' : "bytes=%s" % range_})
+r = requests.get(url, stream=True, headers={'range' : "bytes=%s" % range_})
 
 ok = '1' if r.ok else '0'
-data = r.content
+data_file = r.raw
 
 s.sendall(ok)
 
 
-i = 0
-for i in range(0, len(data), 4 * 1024):
-    if i + 4 * 1024 < len(data):
-        s.sendall(data[i:i + 4 * 1024])
+while True:
+    data = data_file.read(4)
+    print len(data)
+    if not len(data):
+        break
     else:
-        s.sendall(data[i:])
+        try:
+            s.sendall(data)
+        except socket.error:
+            print "Socket error"
 
 s.close()

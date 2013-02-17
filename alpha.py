@@ -74,7 +74,7 @@ ranges = calculate_ranges(betas, file_size)
 
 if betas:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(('', 54321))
+    s.bind((socket.gethostname(), 54321))
     s.listen(betas)
 
     for i in range(1, betas + 1):
@@ -90,7 +90,7 @@ f = open("%s.0" % file_name, 'wb')
 f.write(r.content)
 f.close()
 
-f = open(file_name, 'wb')
-for i in range(betas + 1):
-    f.write(open("%s.%d" % (file_name, i), 'rb').read())
-f.close()
+#f = open(file_name, 'wb')
+#for i in range(betas + 1):
+    #f.write(open("%s.%d" % (file_name, i), 'rb').read())
+#f.close()
