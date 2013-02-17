@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import socket, requests
+import socket, requests, sys
 
 HOST = '127.0.0.1'
 PORT = 54321
@@ -18,5 +18,13 @@ ok = '1' if r.ok else '0'
 data = r.content
 
 s.sendall(ok)
-s.sendall(data)
+
+
+i = 0
+for i in range(0, len(data), 4 * 1024):
+    if i + 4 * 1024 < len(data):
+        s.sendall(data[i:i + 4 * 1024])
+    else:
+        s.sendall(data[i:])
+
 s.close()
