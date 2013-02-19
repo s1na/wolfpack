@@ -29,8 +29,15 @@ class AlphaThread(threading.Thread):
             total_bytes = end - start
             data = ''
 
-            for i in range((total_bytes / (4 * 1024)) + 1):
-                data += conn.recv(4 * 1024)
+            while len(data) < total_bytes:
+                chunk = conn.recv(512)
+                if not chunk:
+                    print "No data received."
+                    break
+                data += chunk
+
+#            for i in range((total_bytes / (4 * 1024)) + 1):
+                #data += conn.recv(4 * 1024)
 
             print 'got beta %ds data' % self.num
 #                buffered_writer = io.BufferedWriter(f)
@@ -74,7 +81,7 @@ ranges = calculate_ranges(betas, file_size)
 
 if betas:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((socket.gethostname(), 54321))
+    s.bind(('', 54321))
     s.listen(betas)
 
     for i in range(1, betas + 1):
