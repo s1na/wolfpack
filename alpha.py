@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
-import sys, requests, threading, socket, io
+import sys, requests, threading
+import socket, io
+import shutil
 
 class AlphaThread(threading.Thread):
     def __init__(self, socket_, url, num, range_, file_name):
@@ -36,13 +38,7 @@ class AlphaThread(threading.Thread):
                     break
                 data += chunk
 
-#            for i in range((total_bytes / (4 * 1024)) + 1):
-                #data += conn.recv(4 * 1024)
-
             print 'got beta %ds data' % self.num
-#                buffered_writer = io.BufferedWriter(f)
-#                buffered_writer.write(data)
-#                buffered_writer.close()
             f.write(data)
             f.close()
         else:
@@ -79,6 +75,7 @@ file_size = int(r.headers['content-length'])
 
 ranges = calculate_ranges(betas, file_size)
 
+threads = []
 if betas:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind(('', 54321))
@@ -86,6 +83,7 @@ if betas:
 
     for i in range(1, betas + 1):
         t = AlphaThread(s, url, i, ranges[i], file_name)
+        threads.append(t)
         t.start()
 
 print 'downloading my part'
@@ -97,7 +95,11 @@ f = open("%s.0" % file_name, 'wb')
 f.write(r.content)
 f.close()
 
-#f = open(file_name, 'wb')
-#for i in range(betas + 1):
-    #f.write(open("%s.%d" % (file_name, i), 'rb').read())
-#f.close()
+# Wait for all the threads to finish.
+for t in threads:
+    t.join()
+
+final_file = open(file_name, 'wb')
+for i in range(betas + 1):
+    shutil.copyfileobj(open("%s.%d" % (file_name, i), 'rb'), final_file)
+final_file.close()
