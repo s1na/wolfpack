@@ -18,11 +18,20 @@ url, num, range_ = data.split(',')
 #ok = '1' if r.ok else '0'
 #data_file = r.raw
 ok = '1'
+total_bytes = start - end = [int(item) for item in range_.split('-')]
 
 s.sendall(ok)
 
-for i in range(1000000):
-    s.sendall(1024 * "h")
+total = 0
+current = 0
+while current < total_bytes:
+    chunk = s.send(512 * "h")
+    if not chunk:
+        print "Beta: no data sent."
+        break
+
+    current += chunk
+
 #total_bytes_sent = 0
 #while True:
     #data = data_file.read(4)
