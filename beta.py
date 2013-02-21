@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
-import socket, requests, time
+import socket
+import time
+import requests
 
 #HOST = '127.0.0.1'
 HOST = "172.17.9.98"
@@ -11,7 +13,7 @@ s.connect((HOST, PORT))
 
 data = s.recv(1024)
 url, num, range_ = data.split(',')
-r = requests.get(url, stream=True, headers={'range' : "bytes=%s" % range_})
+r = requests.get(url, stream=True, headers={'range': "bytes=%s" % range_})
 time.sleep(2)
 
 ok = '1' if r.ok else '0'
