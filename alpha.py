@@ -1,6 +1,11 @@
 #!/usr/bin/python
 
-import sys, requests, threading, socket, io
+import sys
+import requests
+import threading
+import socket
+import io
+
 
 class AlphaThread(threading.Thread):
     def __init__(self, socket_, url, num, range_, file_name):
@@ -42,7 +47,6 @@ class AlphaThread(threading.Thread):
             print 'beta %d unsuccessful download'
 
         conn.close()
-        
 
 
 def calculate_ranges(betas, file_size):
@@ -60,7 +64,6 @@ def calculate_ranges(betas, file_size):
                            file_size - 1)
                          )
     return ranges
-
 
 
 url = sys.argv[1]
@@ -82,7 +85,7 @@ if betas:
         t.start()
 
 print 'downloading my part'
-r = requests.get(url, headers={'range' : "bytes=%s" % ranges[0]})
+r = requests.get(url, headers={'range': "bytes=%s" % ranges[0]})
 print 'downloaded my part'
 print r.headers
 
