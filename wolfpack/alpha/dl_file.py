@@ -2,7 +2,7 @@
 
 import requests
 
-class File(object):
+class DLFile(object):
     def __init__(self, url):
         self.url = url
         self.name = self.url.split('/')[-1]

@@ -46,23 +46,3 @@ class Beta(object):
             chunk = self.socket_.sendall(data)[current:])
             current += 512 
 
-	total_bytes_sent = 0
-	while True:
-#syntax error!
-    	data = data_file.read(4)
-    	if not len(data):
-       		break
-    	else:
-    	    bytes_sent = 0
-            while bytes_sent < 4 * 1024: 
-            stage_sent = 0
-            try:
-                stage_sent = s.send(data[bytes_sent:])
-                stage_sent = s.send("haha")
-                if stage_sent == 0:
-                    print 'no bytes sent'
-                bytes_sent += stage_sent
-
-            except socket.error, e:
-               print "Socket error, %s" % e
-	s.close()
