@@ -6,7 +6,7 @@ from wolfpack.alpha.listener import Listener
 from wolfpack.alpha.dl_file import DLFile
 
 class BetaAgent(threading.Thread):
-    def __init__(self, alpha, conn, num):
+    def __init__(self, alpha, conn):
         threading.Thread.__init__(self)
         self.alpha = alpha
         self.conn = conn

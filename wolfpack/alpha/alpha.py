@@ -11,30 +11,40 @@ from wolfpack.alpha.beta_agent import BetaAgent
 
 class Alpha(object):
     def __init__(self, max_beta_number = 20):
+        self.betas = []
+        self.dl_files = []  # Files to be downloaded
+        self.downloaded_files = list()
         self.listener = Listener(max_beta_number, self)
         self.listener.start()
-        self.dl_files = [] #files to be downloaded
-		#self.chunkes 
 
     def add_url(self, url):
         self.dl_files.append(DLFile(url))
 
     def add_beta(self, conn, addr):
-        dl_file = DLFile(self.url)
-        beta = BetaAgent(self, conn, dl_file, num)
+        beta = BetaAgent(self, conn)
+        self.betas.append(beta)
 
-    def request_chunck(self):   #dont remember chunks can chaneges any time!it's better to save it on db and have a tag for identificaion
-	return self.dl_files[0].request_chunk()
+    def request_chunk(self):
+        counter = 0
+        res = self.dl_files[counter].request_chunk()
+        while len(res) != 3:
+            if res[0] == "Downloading":
+                counter += 1
+            elif res[0] == "Downloaded":
+                self.downloaded_files.append(
+                    self.dl_files.pop(counter)
+                )
+            res = self.dl_files[counter].request_chunk()
+        return res
 
-        
-    def del_beta(self, conn, addr):
-        pass
+    def del_beta(self, conn):
+        conn.close()
+        for beta in self.betas:
+            if beta[0] == conn:
+                self.betas.remove(beta)
 
-    def re_arange(self):
-        pass
-    
     def verify(self, data):
-		pass
+        pass
 
 #url = sys.argv[1]
 #file_name = url.split('/')[-1]
