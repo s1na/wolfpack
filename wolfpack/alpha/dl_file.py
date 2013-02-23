@@ -16,26 +16,19 @@ class DLFile(object):
         calculate_ranges()
 
     def calculate_ranges(self):
-        if  self.size < settings.CHUNK_SIZE:
-            return []   # Files under CHUNK_SIZE are not allowed.
+        if self.size < settings.CHUNK_SIZE:
+            self.chunks.append("%d-%d" %(0, self.size - 1))  #just one part to download
 
-        each_part = self.size / settings.CHUNK_SIZE
-        for i in range(self.parts + 1):
-            if i != self.parts - 1:
-                self.chunks.append(("%d-%d" %
-                              (i * each_part,
-                               ((i + 1) * each_part) - 1)
-                                   ),
-                                   "Available"
-                                  )
-            else:
-                self.chunks.append(("%d-%d" %
-                              (i * each_part,
-                               self.size - 1)
-                                   ),
-                                   "Available"
-                                  )
-                                  
+        num_part = self.size / settings.CHUNK_SIZE
+        for i in range(num_part):
+            self.chunks.append(("%d-%d" %
+                                (i * each_part,
+                                 ((i + 1) * each_part) - 1))
+                               ,"Available")
+        self.chunks.append(("%d-%d" %
+                            (num_part * each_part,
+                             self.size - 1))
+                           ,"Available")
 
     def request_chunk(self):
         for i in range(len(self.chunks)):
