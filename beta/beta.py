@@ -4,6 +4,11 @@ import socket
 import time
 import requests
 
+class Beta(object):
+    def __init__(self):
+        pass
+
+
 #HOST = '127.0.0.1'
 HOST = "172.17.9.98"
 PORT = 54321
