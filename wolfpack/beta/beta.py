@@ -3,7 +3,7 @@
 import socket
 import time
 import requests
-import wolfpack.beta.settings as settings
+from wolfpack.lib.alpha_addr import get_alpha_addr
 
 class Beta(object):
     def __init__(self):
@@ -13,16 +13,17 @@ class Beta(object):
 
     def connect(self):
         self.socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket_.connect((settings.HOST, settings.PORT))
-		#self.socket_.sendall("%s|%s"%(settings.USER, settings.PASS)) # verify username and password
+        self.socket_.connect(get_alpha_addr())
+        #self.socket_.sendall("%s|%s"%(settings.USER, settings.PASS)) # verify username and password
 
         orders = self.socket_.recv(1024)   # Wait for orders   (url,start,end)
         if orders == "sleep":
             # TODO: test again 5 mins later, or wait for the alpha to wake him up?
+            pass
 
         else:
-            self.curr_url, self.start, self.end= orders.split('|')
-			self.range_=end-start
+            self.curr_url, self.start, self.end = orders.split('|')
+            self.range_ = end - start
             receive()
 
     def receive(self):
@@ -30,7 +31,7 @@ class Beta(object):
         time.sleep(1)   # Wait for it to get a few bytes.
 
         ok = '1' if r.ok else '0'
-       	data_file = r.raw
+        data_file = r.raw
         total_bytes = end - start
 
         self.socket_.sendall(ok)
@@ -40,9 +41,5 @@ class Beta(object):
             data = data_file.read(512)
             if not data:
                 break
-			self.socket_.sendall(data)
-			current+=512
-
-		chunk = self.socket_.sendall(data)[current:])
-		current += 512 
-
+            self.socket_.sendall(data)
+            current+=512
