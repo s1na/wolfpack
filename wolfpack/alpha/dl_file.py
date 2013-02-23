@@ -1,35 +1,47 @@
 #!/usr/bin/python
 
 import requests
+import wolfpack.alpha.settings as settings
 
 class DLFile(object):
     def __init__(self, url):
         self.url = url
         self.name = self.url.split('/')[-1]
-        self.parts = 0
-        self.ranges = list()
+        self.chunks = list()
 
         r = requests.head(url)
         self.size = r.headers['content-length']
         self.headers = r.headers    # TODO: Is it needed?
 
-    def calculate_ranges(self):
-        if not self.parts:
-            return []
+        calculate_ranges()
 
-        each_part = self.size / self.parts
+    def calculate_ranges(self):
+        if  self.size < settings.CHUNK_SIZE:
+            return []   # Files under CHUNK_SIZE are not allowed.
+
+        each_part = self.size / settings.CHUNK_SIZE
         for i in range(self.parts):
             if i != self.parts - 1:
-                self.ranges.append("%d-%d" %
+                self.chunks.append(("%d-%d" %
                               (i * each_part,
                                ((i + 1) * each_part) - 1)
-                             )
+                                   ),
+                                   "Available"
+                                  )
             else:
-                self.ranges.append("%d-%d" %
+                self.chunks.append(("%d-%d" %
                               (i * each_part,
                                self.size - 1)
-                             )
-        return self.ranges
+                                   ),
+                                   "Available"
+                                  )
+                                  
+
+    def request_chunk(self):
+        for i in range(len(self.chunks)):
+            if i[1] == "Available":
+                start, end = [int(item) for item in i[0].split('-')]
+                return (self.url, start, end, i)
 
     def merge_parts(self):
         pass

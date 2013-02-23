@@ -13,7 +13,7 @@ class BetaAgent(threading.Thread):
 
     def run(self):
         while True:
-            chunk_info = self.alpha.request_chunk()  # (url, start, end)
+            chunk_info = self.alpha.request_chunk()  # (url, start, end, num)
             if not len(chunk_info):
                 break
 
@@ -29,7 +29,7 @@ class BetaAgent(threading.Thread):
                         break
                     data += part 
 
-                f = open("%s.%s" % (chunk_info[0].split('/')[-1], self.num), 'wb')  #TODO: self.num!!!
+                f = open("%s.%s" % (chunk_info[0].split('/')[-1], chunk_info[3]), 'wb')
                 f.write(data)
                 f.close()
             else:
