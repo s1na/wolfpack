@@ -19,19 +19,21 @@ class Alpha(object):
     def add_url(self, url):
         self.dl_files.append(DLFile(url))
 
-    def add_bata(self, conn, addr):
+    def add_beta(self, conn, addr):
         dl_file = DLFile(self.url)
-        beta = BetaAgent(self.listener, conn, dl_file, num)
+        beta = BetaAgent(self, conn, dl_file, num)
 
-	def request_chunck(self):   #dont remember chunks can chaneges any time!it's better to save it on db and have a tag for identificaion
-		pass               
+    def request_chunck(self):   #dont remember chunks can chaneges any time!it's better to save it on db and have a tag for identificaion
+	return self.dl_files[0].request_chunk()
+
         
     def del_beta(self, conn, addr):
         pass
 
     def re_arange(self):
         pass
-	def verify(self, data):
+    
+    def verify(self, data):
 		pass
 
 #url = sys.argv[1]

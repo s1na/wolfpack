@@ -20,7 +20,7 @@ class DLFile(object):
             return []   # Files under CHUNK_SIZE are not allowed.
 
         each_part = self.size / settings.CHUNK_SIZE
-        for i in range(self.parts):
+        for i in range(self.parts + 1):
             if i != self.parts - 1:
                 self.chunks.append(("%d-%d" %
                               (i * each_part,

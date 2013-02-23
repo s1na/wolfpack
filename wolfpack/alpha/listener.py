@@ -3,7 +3,7 @@
 import threading
 import socket
 import beta_agent
-import wolfpack.alpha.file
+import wolfpack.alpha.DLFile
 
 class Listener(threading.Thread):
     def __init__(self, max_beta_number, alpha_obj):

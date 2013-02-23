@@ -30,7 +30,8 @@ class BetaAgent(threading.Thread):
                     if not part:
                         print "No data received."
                         break
-                    data += part 
+                    else:
+                        data += part 
 
                 f = open("%s.%s" % (chunk_info[0].split('/')[-1], chunk_info[3]), 'wb')
                 f.write(data)
