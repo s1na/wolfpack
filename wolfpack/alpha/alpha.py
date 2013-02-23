@@ -5,19 +5,28 @@ import socket
 import io
 import shutil
 import requests
-import listener
+from wolfpack.alpha.listener import Listener
+from wolfpack.alpha.dl_file import DLFile
+from wolfpack.alpha.beta_agent import BetaAgent
 
 class Alpha(object):
     def __init__(self, max_beta_number = 20):
-        listener = listener.listener(max_beta_number, self)
-        listener.run()
-        self.urls = []
-        self.download_ranges = {}
+        self.listener = Listener(max_beta_number, self)
+        self.listener.start()
+        self.dl_files = []
 
     def add_url(self, url):
-        self.urls.append(url)
-        self.download_ranges[url] = []
+        self.dl_files.append(DLFile(url))
 
+    def add_bata(self, conn, addr):
+        dl_file = DLFile(self.url)
+        beta = BetaAgent(self.listener, conn, dl_file, num)
+        
+    def del_beta(self, conn, addr):
+        pass
+
+    def re_arange(self):
+        pass
 
 #url = sys.argv[1]
 #file_name = url.split('/')[-1]
