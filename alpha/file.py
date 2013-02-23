@@ -1,23 +1,35 @@
 #!/usr/bin/python
 
-class File(object):
-    def __init__(self):
-        pass
+import requests
 
-    def calculate_ranges(betas, file_size):
-        each_part = file_size / (betas + 1)
-        ranges = list()
-        for i in range(betas + 1):
-            if i != betas:
-                ranges.append("%d-%d" %
+class File(object):
+    def __init__(self, url):
+        self.url = url
+        self.name = self.url.split('/')[-1]
+        self.parts = 0
+        self.ranges = list()
+
+        r = requests.head(url)
+        self.size = r.headers['content-length']
+        self.headers = r.headers    # TODO: Is it needed?
+
+    def calculate_ranges(self):
+        if not self.parts:
+            return []
+
+        each_part = self.size / self.parts
+        for i in range(self.parts):
+            if i != self.parts - 1:
+                self.ranges.append("%d-%d" %
                               (i * each_part,
                                ((i + 1) * each_part) - 1)
                              )
             else:
-                ranges.append("%d-%d" %
+                self.ranges.append("%d-%d" %
                               (i * each_part,
-                               file_size - 1)
+                               self.size - 1)
                              )
-        return ranges
+        return self.ranges
 
-
+    def merge_parts(self):
+        pass
