@@ -20,13 +20,10 @@ class Alpha(object):
 
     def add_bata(self, conn, addr):
         dl_file = DLFile(self.url)
-        beta = BetaAgent(self.listener, conn, dl_file, num)
-        
-    def del_beta(self, conn, addr):
-        pass
+        beta = BetaAgent(self, conn, dl_file, num)
 
-    def re_arange(self):
-        pass
+    def request_chunk(self):
+        return self.dl_files[0].request_chunk()
 
 #url = sys.argv[1]
 #file_name = url.split('/')[-1]
