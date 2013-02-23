@@ -6,14 +6,17 @@ from wolfpack.alpha.listener import Listener
 from wolfpack.alpha.dl_file import DLFile
 
 class BetaAgent(threading.Thread):
-    def __init__(self, alpha, conn):
+    def __init__(self, alpha, conn, num):
         threading.Thread.__init__(self)
         self.alpha = alpha
         self.conn = conn
 
     def run(self):
         while True:
-            chunk_info = self.alpha.request_chunk()  # (url, start, end)
+            chunk_info = self.alpha.request_chunk()  # (url, start, end, num)
+			#if not self.alpha.verify(self.conn.recv(1024).split('|'))
+			#	break
+
             if not len(chunk_info):
                 break
 
@@ -27,9 +30,10 @@ class BetaAgent(threading.Thread):
                     if not part:
                         print "No data received."
                         break
-                    data += part 
+                    else:
+                        data += part 
 
-                f = open("%s.%s" % (chunk_info[0].split('/')[-1], self.num), 'wb')  #TODO: self.num!!!
+                f = open("%s.%s" % (chunk_info[0].split('/')[-1], chunk_info[3]), 'wb')
                 f.write(data)
                 f.close()
             else:
