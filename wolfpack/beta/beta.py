@@ -3,7 +3,7 @@
 import socket
 import time
 import requests
-import wolfpack.beta.settings as settings
+from wolfpack.lib.alpha_addr import get_alpha_addr
 
 class Beta(object):
     def __init__(self):
@@ -13,7 +13,7 @@ class Beta(object):
 
     def connect(self):
         self.socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket_.connect((settings.HOST, settings.PORT))
+        self.socket_.connect(get_alpha_addr())
 
         orders = self.socket_.recv(1024)   # Wait for orders
         if orders == "sleep":
@@ -44,5 +44,4 @@ class Beta(object):
                 break
 
             chunk = self.socket_.sendall(data)[current:])
-            current += 512 
-
+            current += 512
