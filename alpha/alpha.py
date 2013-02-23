@@ -5,10 +5,18 @@ import socket
 import io
 import shutil
 import requests
+import listener
 
 class Alpha(object):
-    def __init__(self):
-        pass
+    def __init__(self, max_beta_number = 20):
+        listener = listener.listener(max_beta_number, self)
+        listener.run()
+        self.urls = []
+        self.download_ranges = {}
+
+    def add_url(self, url):
+        self.urls.append(url)
+        self.download_ranges[url] = []
 
 
 #url = sys.argv[1]
