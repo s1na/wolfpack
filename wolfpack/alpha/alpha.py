@@ -25,17 +25,23 @@ class Alpha(object):
         self.betas.append(beta)
 
     def request_chunk(self):
+        if not self.dl_files:
+            return (False, 'sleep')
+
         counter = 0
         res = self.dl_files[counter].request_chunk()
-        while len(res) != 3:
-            if res[0] == "Downloading":
+        while len(res) != 3 and counter < len(self.dl_files):
+            if res[0] == 'Downloading':
                 counter += 1
-            elif res[0] == "Downloaded":
+            elif res[0] == 'Downloaded':
                 self.downloaded_files.append(
                     self.dl_files.pop(counter)
                 )
             res = self.dl_files[counter].request_chunk()
-        return res
+        if counter == len(self.dl_files):
+            return (False, 'sleep')
+
+        return tuple(res.insert(0, True))
 
     def del_beta(self, conn):
         conn.close()
@@ -45,7 +51,7 @@ class Alpha(object):
 
     def halt(self):
         for beta in self.betas:
-            del_beta(beta)
+            self.del_beta(beta)
         self.listener.stop = True
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(('localhost', 54321))

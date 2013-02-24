@@ -17,17 +17,11 @@ class Beta(object):
     def connect(self):
         self.socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket_.connect(get_alpha_addr())
+        print 'Connected to the Alpha successfully.'
+        print 'Waiting for further instructions.'
         #self.socket_.sendall("%s|%s"%(settings.USER, settings.PASS)) # verify username and password
 
-        orders = self.socket_.recv(1024)   # Wait for orders   (url,start,end)
-        if orders == "sleep":
-            # TODO: test again 5 mins later, or wait for the alpha to wake him up?
-            pass
-
-        else:
-            self.curr_url, self.start, self.end = orders.split('|')
-            self.range_ = end - start
-            self.receive()
+        self.send_request()
 
     def receive(self):
         req = requests.get(self.curr_url, stream=True, headers={'range': "bytes=%s" % self.range_}) #to change for next version
@@ -46,8 +40,24 @@ class Beta(object):
             self.socket_.sendall(packet)
             pre_time = new_time
             self.current_file_lenght += settings.PACKAGE_SIZE
+
+        self.send_request()
+
+    def send_request(self):
+        self.socket_.sendall('ready')
+        orders = self.socket_.recv(1024)   # Wait for orders   (url,start,end)
+        while True:
+            if orders == "sleep":
+                #time.sleep(60)
+                orders = self.socket_recv(1024)
+            else:
+                break
+
+        self.curr_url, self.start, self.end = orders.split('|')
+        self.range_ = end - start
+        self.receive()
         
-        
+
         #data_file = r.raw
         #total_bytes = end - start
 

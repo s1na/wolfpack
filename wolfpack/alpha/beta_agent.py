@@ -11,10 +11,21 @@ class BetaAgent(threading.Thread):
         self.conn = conn
 
     def run(self):
+        is_ready = False
         while True:
+            if not is_ready:
+                status = self.conn.recv(10)
+                if status != 'ready':
+                    print 'Beta is not ready!'
+                    break
+            is_ready = False
+
             chunk_info = self.alpha.request_chunk()  # (url, start, end, num)
 			#if not self.alpha.verify(self.conn.recv(1024).split('|'))
 			#	break
+
+            if not chunk_info[0]:
+                self.conn.sendall(chunk_info[1])
 
             if not len(chunk_info):
                 break
@@ -30,6 +41,9 @@ class BetaAgent(threading.Thread):
                         print "No data received."
                         break
                     else:
+                        if part == "ready":
+                            is_ready = True
+                            break
                         data += part 
 
                 f = open("%s.%s" % (chunk_info[0].split('/')[-1], chunk_info[3]), 'wb')
@@ -37,6 +51,4 @@ class BetaAgent(threading.Thread):
                 f.close()
             else:
                 print 'beta %d unsuccessful download'
-
-        self.alpha.del_beta(conn)
 

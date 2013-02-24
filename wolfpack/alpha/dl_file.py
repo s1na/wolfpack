@@ -36,14 +36,14 @@ class DLFile(object):
             self.downloading_chunks.apend(
                 self.available_chunks.pop(self.available_chunks.index(item))
             )
-            return (self.url, item[0], item[1])
+            return [self.url, item[0], item[1]]
 
         if not len(self.available_chunks):
             if not len(self.downloaded_chunks):
                 self.merge_parts()
-                return ("Downloaded",)
+                return ["Downloaded",]
             else:
-                return ("Downloading",)
+                return ["Downloading",]
 
 
     def merge_parts(self):

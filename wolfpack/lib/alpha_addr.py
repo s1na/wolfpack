@@ -25,6 +25,6 @@ def get_alpha_addr():
             break
 
     if not alpha_ip:
-        raise 'Alpha not found'
+        raise Exception, 'Alpha not found'
 
     return (alpha_ip, alpha_port)
