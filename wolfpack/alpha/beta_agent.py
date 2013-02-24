@@ -2,7 +2,6 @@
 
 import socket
 import threading
-from wolfpack.alpha.listener import Listener
 from wolfpack.alpha.dl_file import DLFile
 
 class BetaAgent(threading.Thread):
@@ -39,5 +38,5 @@ class BetaAgent(threading.Thread):
             else:
                 print 'beta %d unsuccessful download'
 
-        self.alpha.listener.del_beta(conn)
+        self.alpha.del_beta(conn)
 

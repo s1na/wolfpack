@@ -14,10 +14,10 @@ class DLFile(object):
         self.downloading_chunks = list()
 
         r = requests.head(url)
-        self.size = r.headers['content-length']
+        self.size = int(r.headers['content-length'])
         self.headers = r.headers    # TODO: Is it needed?
 
-        calculate_ranges()
+        self.calculate_ranges()
 
     def calculate_ranges(self):
         if self.size < settings.CHUNK_SIZE:

@@ -44,10 +44,35 @@ class Alpha(object):
                 self.betas.remove(beta)
 
     def halt(self):
+        for beta in self.betas:
+            del_beta(beta)
         self.listener.stop = True
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(('localhost', 54321))
+        sys.exit(0)
 
     def verify(self, data):
         pass
+
+
+alpha = Alpha()
+print 'Wolfpack server 1.0 running. Status      [OK]'
+while True:
+    sys.stdout.write('>> ')
+    cmd = raw_input()
+    if cmd == "exit":
+        alpha.halt()
+    elif cmd.startswith("add"):
+        url = cmd.split()[1]
+        try:
+            alpha.add_url(url)
+        except Exception, e: # TODO: so generic
+            print e
+            alpha.halt()
+    elif cmd == 'list':
+        print alpha.betas
+        print alpha.dl_files
+        print alpha.downloaded_files
 
 #url = sys.argv[1]
 #file_name = url.split('/')[-1]
