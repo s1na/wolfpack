@@ -14,7 +14,7 @@ class Alpha(object):
         self.betas = []
         self.dl_files = []  # Files to be downloaded
         self.downloaded_files = list()
-        self.listener = Listener(max_beta_number, self)
+        self.listener = Listener(self, max_beta_number)
         self.listener.start()
 
     def add_url(self, url):
@@ -42,6 +42,9 @@ class Alpha(object):
         for beta in self.betas:
             if beta[0] == conn:
                 self.betas.remove(beta)
+
+    def halt(self):
+        self.listener.stop = True
 
     def verify(self, data):
         pass
@@ -79,7 +82,3 @@ class Alpha(object):
 #for t in threads:
     #t.join()
 
-#final_file = open(file_name, 'wb')
-#for i in range(betas + 1):
-    #shutil.copyfileobj(open("%s.%d" % (file_name, i), 'rb'), final_file)
-#final_file.close()

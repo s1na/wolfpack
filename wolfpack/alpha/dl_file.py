@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import shutil
 import requests
 import wolfpack.alpha.settings as settings
 
@@ -39,9 +40,15 @@ class DLFile(object):
 
         if not len(self.available_chunks):
             if not len(self.downloaded_chunks):
-                self.alpha.file_finished()
+                merge_parts()
+                return ("Downloaded",)
             else:
+                return ("Downloading",)
 
 
     def merge_parts(self):
-        pass
+        final_file = open(self.name, 'wb')
+        for i in range(betas + 1):
+            shutil.copyfileobj(open("%s.%d" % (self.name, i), 'rb'), final_file)
+        final_file.close()
+
