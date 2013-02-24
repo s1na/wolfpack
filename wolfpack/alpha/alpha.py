@@ -9,6 +9,7 @@ from wolfpack.alpha.listener import Listener
 from wolfpack.alpha.dl_file import DLFile
 from wolfpack.alpha.beta_agent import BetaAgent
 from wolfpack.lib.utils import log
+from wolfpack.alpha import settings
 
 class Alpha(object):
     def __init__(self, max_beta_number = 20):
@@ -49,17 +50,22 @@ class Alpha(object):
         return tuple(res)
 
     def finished_chunk(self, chunk_info):
-        print 'finished chunk'
         for dl_file in self.dl_files:
-            if dl_file.url == chunk_info[0]:
-                print 'found dl file related'
-                identifier = (chunk_info[1], chunk_info[2], chunk_info[3])
-                print identifier
+            if dl_file.url == chunk_info[1]:
+                identifier = (chunk_info[2], chunk_info[3], chunk_info[4])
                 dl_file.downloaded_chunks.append(
                     dl_file.downloading_chunks.pop(
                         dl_file.downloading_chunks.index(identifier)
                     )
                 )
+                if dl_file.check_status():  # If finished
+                    self.finished_dl_file(dl_file)
+
+    def finished_dl_file(self, dl_file):
+        print 'I: The following has finished downloading:'
+        print dl_file.url
+
+        self.dl_files.remove(dl_file)
 
     def del_beta(self, beta):
         beta.conn.close()
@@ -70,7 +76,7 @@ class Alpha(object):
             self.del_beta(beta)
         self.listener.stop = True
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(('localhost', 54321))
+        s.connect(('localhost', settings.PORT))
         sys.exit(0)
 
     def verify(self, data):

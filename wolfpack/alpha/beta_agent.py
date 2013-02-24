@@ -14,6 +14,7 @@ class BetaAgent(threading.Thread):
 
     def run(self):
         is_ready = False
+        is_finished = False
         while True:
             if not is_ready:
                 print 'not ready'
@@ -50,15 +51,24 @@ class BetaAgent(threading.Thread):
                         print "No data received."
                         break
                     else:
+                        print len(part)
                         if 'END' in part:
                             part, rest = part[:part.index('END')], part[part.index('END'):]
-                            self.alpha.finished_chunk(chunk_info)
-                        if "ready" in rest:
-                            is_ready = True
-                        data += part 
-                f = open("%s.%s" % (chunk_info[1].split('/')[-1], chunk_info[4]), 'wb')
+                            if 'ready' in rest:
+                                is_ready = True
+                                rest = rest.replace('ready', '')
+                            is_finished = True
+                        data = data + part + rest
+
+                file_name = "dls/%s.%s" % (chunk_info[1].split('/')[-1], chunk_info[4])
+                print file_name
+                f = open(file_name, 'wb')
                 f.write(data)
                 f.close()
+
+                if is_finished:
+                    self.alpha.finished_chunk(chunk_info)
+                    is_finished = False
 
             else:
                 print 'beta %d unsuccessful download'
