@@ -3,12 +3,15 @@
 import socket
 import time
 import requests
+import threading
 from wolfpack.lib.alpha_addr import get_alpha_addr
+import setting
 
 class Beta(object):
     def __init__(self):
         self.socket_ = None
-
+        self.current_speed = 0.0
+        self.current_file_lenght
         connect()
 
     def connect(self):
@@ -27,19 +30,33 @@ class Beta(object):
             receive()
 
     def receive(self):
-        r = requests.get(self.curr_url, stream=True, headers={'range': "bytes=%s" % self.range_}) #to change for next version
+        req = requests.get(self.curr_url, stream=True, headers={'range': "bytes=%s" % self.range_}) #to change for next version
+
         time.sleep(1)   # Wait for it to get a few bytes.
 
-        ok = '1' if r.ok else '0'
-        data_file = r.raw
-        total_bytes = end - start
-
-        self.socket_.sendall(ok)
-
-        current = 0
-        while current < total_bytes:
-            data = data_file.read(512)
-            if not data:
+        pre_time = time.time();
+        for packet in req.iter_content(chunk_size = setting.PACKAGE_SIZE):
+            if not packet:
                 break
-            self.socket_.sendall(data)
-            current+=512
+            new_time = time.time()
+            self.current_speed = (setting.PACKAGE_SIZE / (new_time - pre_time))
+            self.socket_.sendall(packet)
+            pre_time = new_time
+            self.current_file_lenght += setting.PACKAGE_SIZE
+        
+        ok = '1' if r.ok else '0'
+        
+        #data_file = r.raw
+        #total_bytes = end - start
+
+        #self.socket_.sendall(ok)
+
+        #current = 0
+        #while current < total_bytes:
+            #data = data_file.read(512)
+            #if not data:
+                #break
+            #self.socket_.sendall(data)
+            #current+=512
+
+
