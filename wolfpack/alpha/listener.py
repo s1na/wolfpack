@@ -10,7 +10,7 @@ class Listener(threading.Thread):
     def __init__(self, alpha, max_beta_number):
         threading.Thread.__init__(self)
         self.socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket_.bind(('', settings.PORT))
+        self.socket_.bind(('', 54328))#settings.PORT))
         self.socket_.listen(max_beta_number)
         self.alpha = alpha
         self.stop = False

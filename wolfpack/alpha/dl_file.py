@@ -20,35 +20,37 @@ class DLFile(object):
         self.calculate_ranges()
 
     def calculate_ranges(self):
+        counter = 0
         if self.size < settings.CHUNK_SIZE:
-            self.available_chunks.append("%d-%d" %(0, self.size - 1))  #just one part to download
+            self.available_chunks.append((0, self.size - 1, counter))  #just one part to download
+            return
 
         num_part = self.size / settings.CHUNK_SIZE
         for i in range(num_part):
             self.available_chunks.append((i * settings.CHUNK_SIZE, 
-                                          ((i + 1) * settings.CHUNK_SIZE) - 1))
+                                          ((i + 1) * settings.CHUNK_SIZE) - 1), counter)
+            counter += 1
         if not self.size % settings.CHUNK_SIZE:
             self.available_chunks.append((num_part * settings.CHUNK_SIZE,
-                                          self.size - 1))
+                                          self.size - 1), counter)
 
     def request_chunk(self):
-        for item in self.available_chunks:
-            self.downloading_chunks.apend(
-                self.available_chunks.pop(self.available_chunks.index(item))
-            )
-            return [self.url, item[0], item[1]]
-
         if not len(self.available_chunks):
-            if not len(self.downloaded_chunks):
+            if not len(self.downloading_chunks):
                 self.merge_parts()
                 return ["Downloaded",]
             else:
                 return ["Downloading",]
 
+        print 'available'
+        item = self.available_chunks[0]
+        self.downloading_chunks.append(self.available_chunks.pop(0))
+        return [self.url, item[0], item[1], item[2]]
+
 
     def merge_parts(self):
         final_file = open(self.name, 'wb')
-        for i in range(betas + 1):
+        for i in range(len(self.downloaded_chunks)):
             shutil.copyfileobj(open("%s.%d" % (self.name, i), 'rb'), final_file)
         final_file.close()
 
