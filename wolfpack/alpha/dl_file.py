@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import shutil
+import os
 import requests
 import wolfpack.alpha.settings as settings
 
@@ -49,8 +50,16 @@ class DLFile(object):
 
 
     def merge_parts(self):
-        final_file = open(self.name, 'wb')
+        final_file = open('dls/' + self.name, 'wb')
         for i in range(len(self.downloaded_chunks)):
-            shutil.copyfileobj(open("%s.%d" % (self.name, i), 'rb'), final_file)
+            file_name = "dls/%s.%d" % (self.name, i)
+            shutil.copyfileobj(open(file_name, 'rb'), final_file)
+            os.remove(file_name)
         final_file.close()
 
+    def check_status(self):
+        if not len(self.available_chunks) and\
+           not len(self.downloading_chunks):
+            self.merge_parts()
+            return True # If finished
+        return False
