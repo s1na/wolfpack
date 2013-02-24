@@ -40,7 +40,7 @@ class DLFile(object):
 
         if not len(self.available_chunks):
             if not len(self.downloaded_chunks):
-                merge_parts()
+                self.merge_parts()
                 return ("Downloaded",)
             else:
                 return ("Downloading",)

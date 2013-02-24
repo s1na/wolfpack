@@ -5,14 +5,14 @@ import time
 import requests
 import threading
 from wolfpack.lib.alpha_addr import get_alpha_addr
-from wolfpack.beta.settings as settings
+import wolfpack.beta.settings as settings
 
 class Beta(object):
     def __init__(self):
         self.socket_ = None
         self.current_speed = 0.0
         self.current_file_lenght = 0
-        connect()
+        self.connect()
 
     def connect(self):
         self.socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -27,7 +27,7 @@ class Beta(object):
         else:
             self.curr_url, self.start, self.end = orders.split('|')
             self.range_ = end - start
-            receive()
+            self.receive()
 
     def receive(self):
         req = requests.get(self.curr_url, stream=True, headers={'range': "bytes=%s" % self.range_}) #to change for next version
