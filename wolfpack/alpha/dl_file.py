@@ -29,11 +29,11 @@ class DLFile(object):
         num_part = self.size / settings.CHUNK_SIZE
         for i in range(num_part):
             self.available_chunks.append((i * settings.CHUNK_SIZE, 
-                                          ((i + 1) * settings.CHUNK_SIZE) - 1), counter)
+                                          ((i + 1) * settings.CHUNK_SIZE) - 1, counter))
             counter += 1
-        if not self.size % settings.CHUNK_SIZE:
+        if self.size % settings.CHUNK_SIZE > 0:
             self.available_chunks.append((num_part * settings.CHUNK_SIZE,
-                                          self.size - 1), counter)
+                                          self.size - 1, counter))
 
     def request_chunk(self):
         if not len(self.available_chunks):
