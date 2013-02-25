@@ -18,7 +18,7 @@ class Beta(object):
         self.socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket_.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         #self.socket_.connect(get_alpha_addr())
-	self.socket_.connect(('192.168.42.168', 54322))
+	self.socket_.connect((settings.HOST, settings.PORT))
         print 'Connected to the Alpha successfully.'
         print 'Waiting for further instructions.'
         #self.socket_.sendall("%s|%s"%(settings.USER, settings.PASS)) # verify username and password
@@ -60,22 +60,22 @@ class Beta(object):
 
     def send_request(self):
         self.socket_.sendall('ready')
-	print 'sent'
         orders = self.socket_.recv(1024)   # Wait for orders   (url,start,end)
         if not orders:
                 self.socket_.close()
                 return
         while True:
+	    if not orders:
+		self.socket_.close()
+		return
             if "sleep" in orders:
                 #time.sleep(60)
                 orders = self.socket_.recv(1024)
             else:
                 break
-	print '****', orders	
         self.curr_url, self.start, self.end = orders.split('|')
 	self.start, self.end = int(self.start), int(self.end)
         self.range_ = self.end - self.start
-	print 'before recv'
         self.receive()
         
 
