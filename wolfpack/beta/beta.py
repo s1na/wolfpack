@@ -56,7 +56,7 @@ class Beta(object):
         self.curr_url, self.start, self.end = orders.split('|')
         self.range_ = end - start
         self.receive()
-        
+
 
         #data_file = r.raw
         #total_bytes = end - start
@@ -69,7 +69,3 @@ class Beta(object):
                 #break
             #self.socket_.sendall(data)
             #current+=512
-
-if __name__ == '__main__':
-    execfile('../lib/add_path.py', {})
-    beta = Beta()

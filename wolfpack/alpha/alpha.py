@@ -61,24 +61,6 @@ class Alpha(object):
         pass
 
 
-alpha = Alpha()
-print 'Wolfpack server 1.0 running. Status      [OK]'
-while True:
-    sys.stdout.write('>> ')
-    cmd = raw_input()
-    if cmd == "exit":
-        alpha.halt()
-    elif cmd.startswith("add"):
-        url = cmd.split()[1]
-        try:
-            alpha.add_url(url)
-        except Exception, e: # TODO: so generic
-            print e
-            alpha.halt()
-    elif cmd == 'list':
-        print alpha.betas
-        print alpha.dl_files
-        print alpha.downloaded_files
 
 #url = sys.argv[1]
 #file_name = url.split('/')[-1]
@@ -112,4 +94,3 @@ while True:
 ## Wait for all the threads to finish.
 #for t in threads:
     #t.join()
-

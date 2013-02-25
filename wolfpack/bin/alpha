@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+import os
+import sys
+
+sys.path.append(os.path.realpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..')))
+
+from wolfpack.alpha.alpha import Alpha
+
+
+alpha = Alpha()
+print 'Wolfpack server 1.0 running. Status      [OK]'
+
+while True:
+    sys.stdout.write('>> ')
+    cmd = raw_input()
+    if cmd == "exit":
+        alpha.halt()
+
+    elif cmd.startswith("add"):
+        url = cmd.split()[1]
+
+        try:
+            alpha.add_url(url)
+        except Exception, e: # TODO: so generic
+            print e
+            alpha.halt()
+
+    elif cmd == 'list':
+        print alpha.betas
+        print alpha.dl_files
+        print alpha.downloaded_files
