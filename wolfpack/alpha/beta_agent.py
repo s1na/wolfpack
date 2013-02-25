@@ -16,11 +16,12 @@ class BetaAgent(threading.Thread):
         is_ready = False
         is_finished = False
         while True:
+            print is_ready
             if not is_ready:
-                print 'not ready'
                 status = self.conn.recv(10)
                 if status != 'ready':
-                    print 'Beta is not ready!'
+                    print 'Beta is not ready and says: '
+                    print status
                     break
                 is_ready = True
 
@@ -41,34 +42,47 @@ class BetaAgent(threading.Thread):
             ok = int(self.conn.recv(1))
             if ok:
                 is_ready = False
-                print 'beta ok'
                 total_bytes = chunk_info[3] - chunk_info[2]
                 data = ''
                 while len(data) < total_bytes:
                     part = self.conn.recv(512)
                     rest = ''
                     if not part:
-                        print "No data received."
+                        print "V: Beta no data received."
                         break
                     else:
-                        print len(part)
                         if 'END' in part:
+                            print 'V: END exists in part'
                             part, rest = part[:part.index('END')], part[part.index('END'):]
                             if 'ready' in rest:
                                 is_ready = True
                                 rest = rest.replace('ready', '')
                             is_finished = True
+                        if 'ready' in part:
+                            print 'V: Ready in part!'
                         data = data + part + rest
 
+                if not is_finished:
+                    print 'V: Determining if correctly got END'
+                    leftover = self.conn.recv(100)
+                    print leftover
+                    if 'END' in leftover:
+                        print 'V: Got END'
+                        leftover = leftover.replace('END', '')
+                        if 'ready' in leftover:
+                            is_ready = True
+                    else:
+                        print 'Beta didn\'t get END, instead got: '
+                        print leftover 
+                        continue
+
                 file_name = "dls/%s.%s" % (chunk_info[1].split('/')[-1], chunk_info[4])
-                print file_name
                 f = open(file_name, 'wb')
                 f.write(data)
                 f.close()
 
-                if is_finished:
-                    self.alpha.finished_chunk(chunk_info)
-                    is_finished = False
+                self.alpha.finished_chunk(chunk_info)
+                is_finished = False
 
             else:
                 print 'beta %d unsuccessful download'

@@ -60,7 +60,6 @@ class Beta(object):
 
     def send_request(self):
         self.socket_.sendall('ready')
-	print 'sent'
         orders = self.socket_.recv(1024)   # Wait for orders   (url,start,end)
         if not orders:
                 self.socket_.close()
@@ -71,11 +70,9 @@ class Beta(object):
                 orders = self.socket_.recv(1024)
             else:
                 break
-	print '****', orders	
         self.curr_url, self.start, self.end = orders.split('|')
 	self.start, self.end = int(self.start), int(self.end)
         self.range_ = self.end - self.start
-	print 'before recv'
         self.receive()
         
 
