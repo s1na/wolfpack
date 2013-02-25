@@ -17,7 +17,7 @@ class Beta(object):
     def connect(self):
         self.socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket_.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-        #self.socket_.connect(get_alpha_addr())
+        #self.socket_.connect(get_alpha_addr()) #TODO: I couldn't get nmap to work.
 	self.socket_.connect(('192.168.42.168', 54322))
         print 'Connected to the Alpha successfully.'
         print 'Waiting for further instructions.'

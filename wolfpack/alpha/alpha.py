@@ -83,36 +83,3 @@ class Alpha(object):
         pass
 
 
-
-#url = sys.argv[1]
-#file_name = url.split('/')[-1]
-#betas = int(sys.argv[2])
-
-#r = requests.head(url)
-#file_size = int(r.headers['content-length'])
-
-#ranges = calculate_ranges(betas, file_size)
-
-#threads = []
-#if betas:
-    #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #s.bind(('', 54321))
-    #s.listen(betas)
-
-    #for i in range(1, betas + 1):
-        #t = AlphaThread(s, url, i, ranges[i], file_name)
-        #threads.append(t)
-        #t.start()
-
-#print 'downloading my part'
-#r = requests.get(url, headers={'range': "bytes=%s" % ranges[0]})
-#print 'downloaded my part'
-#print r.headers
-
-#f = open("%s.0" % file_name, 'wb')
-#f.write(r.content)
-#f.close()
-
-## Wait for all the threads to finish.
-#for t in threads:
-    #t.join()

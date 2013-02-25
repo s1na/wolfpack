@@ -16,7 +16,6 @@ class BetaAgent(threading.Thread):
         is_ready = False
         is_finished = False
         while True:
-            print is_ready
             if not is_ready:
                 status = self.conn.recv(10)
                 if status != 'ready':
@@ -37,7 +36,6 @@ class BetaAgent(threading.Thread):
             if not len(chunk_info):
                 break
 
-            print chunk_info
             self.conn.sendall("%s|%d|%d" % (chunk_info[1], chunk_info[2], chunk_info[3]))
             ok = int(self.conn.recv(1))
             if ok:
