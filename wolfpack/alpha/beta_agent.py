@@ -11,16 +11,26 @@ class BetaAgent(threading.Thread):
         threading.Thread.__init__(self)
         self.alpha = alpha
         self.conn = conn
+        self.status = 'not ready'
+        self.current_file_length = 0
+        self.current_speed = 0.0
+
+    def get_speed(self):
+        pre_file_length = self.current_file_length
+        while self.status == 'ready':
+            time.sleep(1)
+            self.current_speed = (self.current_file_length - pre_file_lenght) / 1024.0 #KBps
+            pre_file_lenght = self.current_file_lenght
 
     def run(self):
         is_ready = False
         is_finished = False
         while True:
             if not is_ready:
-                status = self.conn.recv(10)
-                if status != 'ready':
+                self.status = self.conn.recv(10)
+                if self.status != 'ready':
                     print 'Beta is not ready and says: '
-                    print status
+                    print self.status
                     break
                 is_ready = True
 
@@ -42,8 +52,13 @@ class BetaAgent(threading.Thread):
                 is_ready = False
                 total_bytes = chunk_info[3] - chunk_info[2]
                 data = ''
+
+                get_speed_thread = threading.Thread(self.get_speed)
+                get_speed_thread.start()
+
                 while len(data) < total_bytes:
                     part = self.conn.recv(512)
+                    self.current_file_length += 512
                     rest = ''
                     if not part:
                         print "V: Beta no data received."

@@ -33,26 +33,28 @@ class Beta(object):
         ok = '1' if r.ok else '0'
         self.socket_.sendall(ok)
 
-       # pre_time = time.time();
-       # for packet in req.iter_content(chunk_size = settings.PACKAGE_SIZE):
-       #     if not packet:
-       #         break
-       #     new_time = time.time()
-       #     self.current_speed = (settings.PACKAGE_SIZE / (new_time - pre_time))
-       #     self.socket_.sendall(packet)
-       #     pre_time = new_time
-       #     self.current_file_lenght += settings.PACKAGE_SIZE
+        #for repairing the reset by peer Error
+        #I Broke package in 10 small package
+        #and send It to Beta_agent
+        pre_time = time.time();
+        for packet in req.iter_content(chunk_size = settings.PACKAGE_SIZE):
+            pre_time = new_time
+            for i in range(setting.PACKAGE_PIECES):
+                bytes_ = packet.read(setting.PACKAGE_SIZE / setting.PACKAGE_PIECES))
+                self.socket_.sendall(bytes_)
+            self.current_file_lenght += len(packet)
+            self.current_speed = (settings.PACKAGE_SIZE / 1024.0 / (new_time - pre_time))  #KBps
 
-        data_file = r.raw
-        total_bytes = self.end - self.start
-
-        current = 0
-        while current < total_bytes:
-            data = data_file.read(512)
-            if not data:
-                break
-            self.socket_.sendall(data)
-            current+=512
+#        data_file = r.raw
+#        total_bytes = self.end - self.start
+#
+#        current = 0
+#        while current < total_bytes:
+#            data = data_file.read(512)
+#            if not data:
+#                break
+#            self.socket_.sendall(data)
+#            current+=512
 
 	self.socket_.sendall('END')
         self.send_request()
