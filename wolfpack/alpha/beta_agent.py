@@ -15,11 +15,11 @@ class BetaAgent(threading.Thread):
         self.current_file_length = 0
         self.current_speed = 0.0
 
-    def get_speed(self):
+    def get_speed(self, update_time = 1):
         pre_file_length = self.current_file_length
         while self.status == 'ready':
-            time.sleep(1)
-            self.current_speed = (self.current_file_length - pre_file_lenght) / 1024.0 #KBps
+            time.sleep(update_time)
+            self.current_speed = (self.current_file_length - pre_file_lenght) / 1024.0 / update_time #KBps
             pre_file_lenght = self.current_file_lenght
 
     def run(self):
