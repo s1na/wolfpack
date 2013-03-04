@@ -36,8 +36,8 @@ class BetaAgent(threading.Thread):
                 is_ready = True
 
             chunk_info = self.alpha.request_chunk()  # (url, start, end, num)
-			#if not self.alpha.verify(self.conn.recv(1024).split('|'))
-			#	break
+        #if not self.alpha.verify(self.conn.recv(1024).split('|'))
+        # break
 
             if not chunk_info[0]:
                 self.conn.sendall(chunk_info[1])

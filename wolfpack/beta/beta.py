@@ -17,7 +17,7 @@ class Beta(object):
         self.socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket_.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         #self.socket_.connect(get_alpha_addr()) #TODO: I couldn't get nmap to work.
-	self.socket_.connect((settings.HOST, settings.PORT))
+        self.socket_.connect((settings.HOST, settings.PORT))
         print 'Connected to the Alpha successfully.'
         print 'Waiting for further instructions.'
         #self.socket_.sendall("%s|%s"%(settings.USER, settings.PASS)) # verify username and password
@@ -36,7 +36,7 @@ class Beta(object):
             self.socket_.sendall(pack)
             self.current_file_length += len(pack)
 
-	self.socket_.sendall('END')
+        self.socket_.sendall('END')
         self.send_request()
 
     def send_request(self):
@@ -52,7 +52,7 @@ class Beta(object):
             else:
                 break
         self.curr_url, self.start, self.end = orders.split('|')
-	self.start, self.end = int(self.start), int(self.end)
+        self.start, self.end = int(self.start), int(self.end)
         self.range_ = self.end - self.start
         self.receive()
 
